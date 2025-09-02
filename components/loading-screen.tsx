@@ -137,7 +137,7 @@ export default function LoadingScreen({ onComplete, children }) {
           </div>
 
           <div className="preloader-bg-img">
-            <img src="/hero.gif" alt="" />
+            <div className="animated-bg"></div>
           </div>
         </>
       )}

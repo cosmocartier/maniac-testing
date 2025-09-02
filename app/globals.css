@@ -185,12 +185,27 @@
   width: 100%;
   height: 100%;
   z-index: -1;
+  background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
 }
 
-.preloader-bg-img img {
+.animated-bg {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  background: linear-gradient(135deg, #000000 0%, #1a1a1a 50%, #000000 100%);
+  background-size: 400% 400%;
+  animation: gradientShift 3s ease-in-out infinite;
+}
+
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 .loading-content {
@@ -199,3 +214,4 @@
   height: 100%;
   clip-path: polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%);
 }
+
