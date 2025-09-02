@@ -1,0 +1,201 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Futura Font Face Declarations - Using system fonts as fallback */
+@font-face {
+  font-family: "Futura";
+  src: local("Futura"), local("Futura-Medium"), local("Avenir"), local("Avenir-Medium");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Futura-Medium";
+  src: local("Futura-Medium"), local("Futura"), local("Avenir-Medium"), local("Avenir");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@layer base {
+  :root {
+    --background: 0 0% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 0 0% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 0 0% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 0 0% 9%;
+    --secondary: 0 0% 14.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 0 0% 14.9%;
+    --muted-foreground: 0 0% 63.9%;
+    --accent: 0 0% 14.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 14.9%;
+    --input: 0 0% 14.9%;
+    --ring: 0 0% 83.1%;
+
+    --me-50: 240 100% 98%;
+    --me-100: 240 100% 95%;
+    --me-200: 240 100% 90%;
+    --me-300: 240 100% 83%;
+    --me-400: 240 100% 74%;
+    --me-500: 240 100% 65%;
+    --me-600: 240 100% 56%;
+    --me-700: 240 100% 47%;
+    --me-800: 240 100% 38%;
+    --me-900: 240 100% 29%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: "Futura", "Futura-Medium", "Avenir", "Avenir Next", -apple-system, BlinkMacSystemFont, "Segoe UI",
+      "Roboto", "Helvetica Neue", Arial, sans-serif;
+    font-weight: 400;
+    letter-spacing: 0.025em;
+  }
+
+  /* Enhanced typography for capital letters */
+  .caps-enhanced {
+    letter-spacing: 0.15em;
+    font-weight: 500;
+  }
+
+  /* Optimized spacing for headings */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: "Futura", "Futura-Medium", "Avenir", "Avenir Next", -apple-system, BlinkMacSystemFont, "Segoe UI",
+      sans-serif;
+    font-weight: 400;
+    letter-spacing: 0.05em;
+  }
+
+  /* Button text optimization */
+  button {
+    font-family: "Futura", "Futura-Medium", "Avenir", "Avenir Next", -apple-system, BlinkMacSystemFont, "Segoe UI",
+      sans-serif;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+  }
+
+  /* Input text optimization */
+  input,
+  textarea {
+    font-family: "Futura", "Futura-Medium", "Avenir", "Avenir Next", -apple-system, BlinkMacSystemFont, "Segoe UI",
+      sans-serif;
+    font-weight: 400;
+  }
+
+  /* Navigation text optimization */
+  nav {
+    font-family: "Futura", "Futura-Medium", "Avenir", "Avenir Next", -apple-system, BlinkMacSystemFont, "Segoe UI",
+      sans-serif;
+    font-weight: 500;
+  }
+}
+
+.loading-screen {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.preloader-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1000;
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pre-loader {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loader {
+  width: 100%;
+  height: 100%;
+  background: #fff;
+  border-radius: 50%;
+}
+
+.loader-bg {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: #333;
+  border-radius: 50%;
+}
+
+.count {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #fff;
+  font-size: 3rem;
+  font-weight: bold;
+}
+
+.count p {
+  margin: 0;
+  color: #fff;
+}
+
+.loader-2 {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background: #000;
+}
+
+.preloader-bg-img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+}
+
+.preloader-bg-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.loading-content {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  clip-path: polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%);
+}
