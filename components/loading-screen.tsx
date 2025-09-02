@@ -1,101 +1,150 @@
 "use client";
-import { useEffect, useState, ReactNode, useRef } from "react";
+import { useRef, useEffect, useState } from "react";
+import gsap from "gsap";
+import CustomEase from "gsap/CustomEase";
 
-interface LoadingScreenProps {
-  isLoading?: boolean;
-  onComplete?: () => void;
-  children: ReactNode;
-}
+// Register GSAP plugins
+gsap.registerPlugin(CustomEase);
+CustomEase.create("hop", ".15, 1, .25, 1");
+CustomEase.create("hop2", ".9, 0, .1, 1");
 
-export default function LoadingScreen({ isLoading: parentIsLoading, onComplete, children }: LoadingScreenProps) {
-  const [internalLoading, setInternalLoading] = useState(true);
-  const counterRef = useRef<HTMLParagraphElement>(null);
+export default function LoadingScreen({ onComplete, children }) {
+  const [showPreloader, setShowPreloader] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
+  const counterRef = useRef(null);
+  const containerRef = useRef(null);
 
-  useEffect(() => {
-    console.log("LoadingScreen: useEffect triggered, parentIsLoading:", parentIsLoading, "internalLoading:", internalLoading);
-    
-    // If parent says we're not loading, respect that
-    if (!parentIsLoading) {
-      console.log("LoadingScreen: Parent says not loading, setting internal to false");
-      setInternalLoading(false);
-      return;
+  // Counter animation function
+  const startLoader = () => {
+    const counterElement = counterRef.current;
+    const totalDuration = 2000;
+    const totalSteps = 11;
+    const timePerStep = totalDuration / totalSteps;
+
+    if (counterElement) {
+      counterElement.textContent = "0";
     }
-    
-    // Start the counter animation
+
     let currentStep = 0;
-    const totalSteps = 20;
-    const timePerStep = 100; // 100ms per step = 2 seconds total
-    
-    const updateCounter = () => {
+    function updateCounter() {
       currentStep++;
-      if (currentStep <= totalSteps && counterRef.current) {
+      if (currentStep <= totalSteps) {
         const progress = currentStep / totalSteps;
-        const value = Math.floor(progress * 100);
-        counterRef.current.textContent = value.toString();
-        
+        let value;
+
+        if (currentStep === totalSteps) {
+          value = 100;
+        } else {
+          const exactValue = progress * 100;
+          const minValue = Math.max(Math.floor(exactValue - 5), 1);
+          const maxValue = Math.min(Math.floor(exactValue + 5), 99);
+          value =
+            Math.floor(Math.random() * (maxValue - minValue + 1)) + minValue;
+        }
+        if (counterElement) {
+          counterElement.textContent = value;
+        }
         if (currentStep < totalSteps) {
           setTimeout(updateCounter, timePerStep);
-        } else {
-          // Counter finished, wait a bit then hide loading screen
-          setTimeout(() => {
-            console.log("LoadingScreen: Counter completed, setting internalLoading to false");
-            setInternalLoading(false);
-            if (onComplete) onComplete();
-          }, 500);
         }
       }
-    };
+    }
 
-    // Start the counter
     setTimeout(updateCounter, timePerStep);
+  };
 
-    return () => {
-      // Cleanup if component unmounts
-    };
-  }, [parentIsLoading, onComplete]);
+  // Main animation sequence
+  useEffect(() => {
+    if (showPreloader) {
+      startLoader();
 
-  console.log("LoadingScreen: render called, parentIsLoading:", parentIsLoading, "internalLoading:", internalLoading);
+      // Set initial state
+      gsap.set(".loading-content", {
+        clipPath: "polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%)",
+      });
 
-  // Show loading screen if either parent or internal state says we're loading
-  if (!parentIsLoading && !internalLoading) {
-    console.log("LoadingScreen: Both loading states false, returning children");
+      const tl = gsap.timeline({
+        onComplete: () => {
+          setShowPreloader(false);
+          setIsLoading(false);
+          if (onComplete) onComplete();
+        }
+      });
+
+      // Counter fade out
+      tl.to(".count", {
+        opacity: 0,
+        delay: 2.5,
+        duration: 0.25,
+      });
+
+      // Preloader scale down
+      tl.to(".pre-loader", {
+        scale: 0.5,
+        ease: "hop2",
+        duration: 1,
+      });
+
+      // Content reveal
+      tl.to(".loading-content", {
+        clipPath: "polygon(0% 100%, 100% 100%, 100% 0%, 0% 0%)",
+        duration: 1.5,
+        ease: "hop2",
+        delay: -1,
+      });
+
+      // Loader elements hide
+      tl.to(".loader", {
+        height: "0",
+        ease: "hop2",
+        duration: 1,
+        delay: -1,
+      });
+
+      tl.to(".loader-bg", {
+        height: "0",
+        ease: "hop2",
+        duration: 1,
+        delay: -0.5,
+      });
+
+      tl.to(".loader-2", {
+        clipPath: "polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)",
+        ease: "hop2",
+        duration: 1,
+      });
+    }
+  }, [showPreloader, onComplete]);
+
+  // If loading is complete, show children
+  if (!isLoading) {
     return children;
   }
 
-  console.log("LoadingScreen: Rendering loading screen UI");
-  
   return (
-    <div 
-      style={{ 
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        width: '100vw',
-        height: '100vh',
-        background: 'linear-gradient(135deg, #000000 0%, #1a1a1a 50%, #000000 100%)',
-        backgroundSize: '400% 400%',
-        animation: 'gradientShift 3s ease-in-out infinite',
-        zIndex: 9999,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        color: 'white',
-        fontSize: '48px',
-        fontWeight: 'bold'
-      }}
-    >
-      <div style={{ textAlign: 'center' }}>
-        <div style={{ fontSize: '120px', marginBottom: '20px', fontWeight: '300' }}>
-          <span ref={counterRef}>0</span>%
-        </div>
-        <div style={{ fontSize: '24px', opacity: 0.8, fontWeight: '300' }}>
-          Loading...
-        </div>
-        <div style={{ fontSize: '16px', marginTop: '20px', opacity: 0.6, fontWeight: '300' }}>
-          Parent isLoading: {parentIsLoading ? 'true' : 'false'}
-          <br />
-          Internal loading: {internalLoading ? 'true' : 'false'}
-        </div>
+    <div className="loading-screen" ref={containerRef}>
+      {showPreloader && (
+        <>
+          <div className="preloader-overlay">
+            <div className="pre-loader">
+              <div className="loader"></div>
+              <div className="loader-bg"></div>
+            </div>
+            <div className="count">
+              <p ref={counterRef}>0</p>
+            </div>
+            <div className="loader-2"></div>
+          </div>
+
+          <div className="preloader-bg-img">
+            <img src="/hero.gif" alt="" />
+          </div>
+        </>
+      )}
+
+      <div className="loading-content">
+        {/* Your main content goes here */}
+        {children}
       </div>
     </div>
   );
