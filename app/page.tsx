@@ -425,7 +425,9 @@ export default function LandingPage() {
       <PerformanceMonitor />
 
       <AnimatePresence>
-        <LoadingScreen isLoading={isLoading} />
+        <LoadingScreen isLoading={isLoading}>
+          <div>Loading content placeholder</div>
+        </LoadingScreen>
       </AnimatePresence>
 
       {!isLoading && (
